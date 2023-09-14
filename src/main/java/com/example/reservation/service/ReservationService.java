@@ -25,7 +25,6 @@ public class ReservationService {
 
     public void save(ReservationRequest request, String storeId) {
         Reservation save = reservationRepository.save(request.toEntity(storeId));
-        System.out.println(save.getStatus()+"#################################################");
     }
 
     public void updateStatus(String storeId, String status) {
