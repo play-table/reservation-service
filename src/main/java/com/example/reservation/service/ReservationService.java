@@ -1,5 +1,6 @@
 package com.example.reservation.service;
 
+import com.example.reservation.client.api.StoreClient;
 import com.example.reservation.domain.entity.Reservation;
 import com.example.reservation.domain.entity.ReservationStatus;
 import com.example.reservation.domain.request.OpenRequest;
@@ -22,16 +23,18 @@ import java.util.UUID;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final StoreReservationInformationRepository storeReservationInformationRepository;
+    private final StoreClient storeClient;
 
     public void save(ReservationRequest request, String storeId) {
         Reservation save = reservationRepository.save(request.toEntity(storeId));
+        storeClient.increaseReservation(UUID.fromString(storeId));
     }
 
     public void updateStatus(String storeId, String status) {
         Reservation byStoreId = findById(storeId); // 아래에 findById에서 storeId없으면 오류 띄우는거 있음..
         byStoreId.setStatus(ReservationStatus.valueOf(status.toUpperCase()));
 
-
+//      ## 빌더는 새로 만드는거라 업데이트를 하는 건 위에처럼 set으로 해당 status만 바꿔주자!
 //        Reservation reservation = Reservation.builder()
 //                .storeId(UUID.fromString(storeId))
 //                .status("예약취소")
@@ -54,9 +57,11 @@ public class ReservationService {
     }
 
     public List<ReservationResponse> reservationHistory(String customerId) {
-        Reservation allByCustomerId = reservationRepository.getAllByCustomerId(UUID.fromString(customerId));
-//        allByCustomerId.stream().w
-        return null;
+
+        List<Reservation> allByCustomerId = reservationRepository.findAllByCustomerId(UUID.fromString(customerId));
+
+
+        return allByCustomerId.stream().map(ReservationResponse::new).toList();
     }
 
 

@@ -8,7 +8,9 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 
 public class ReservationResponse {
+    @DateTimeFormat(pattern = "yyyy-mm-dd")
     private LocalDate reservationDay;
+    @DateTimeFormat(pattern = "HH:mm")
     private LocalTime reservationTime;
     private Integer totalPeople;
     private ReservationStatus status;
@@ -21,7 +23,14 @@ public class ReservationResponse {
         this.reservationTime = reservation.getReservationTime();
         this.totalPeople = reservation.getTotalPeople();
         this.status = reservation.getStatus();
-        this.customerId = reservation.getCustomerName();
+        this.customerId = String.valueOf(reservation.getCustomerId());
         this.customerName = reservation.getCustomerName();
+
+        System.out.println(this.reservationDay);
+        System.out.println(this.reservationTime);
+        System.out.println(this.totalPeople);
+        System.out.println(this.status);
+        System.out.println(this.customerId);
+        System.out.println(this.customerName);
     }
 }

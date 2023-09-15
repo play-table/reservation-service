@@ -3,6 +3,7 @@ package com.example.reservation.controller;
 import com.example.reservation.domain.entity.Reservation;
 import com.example.reservation.domain.request.OpenRequest;
 import com.example.reservation.domain.request.ReservationRequest;
+import com.example.reservation.domain.response.ReservationResponse;
 import com.example.reservation.service.ReservationService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -32,9 +33,10 @@ public class ReservationController {
         reservationService.reservationOpen(storeId, request);
     }
 
-//    @GetMapping("/{customerId}")
-//    public List<Reservation> reservationHistory(
-//            @PathVariable String customerId) {
-//        return reservationService.reservationHistory(customerId);
-//    }
+    @GetMapping("/{customerId}")
+    public List<ReservationResponse> reservationHistory(
+            @PathVariable String customerId) {
+            return reservationService.reservationHistory(customerId);
+    }
+
 }
