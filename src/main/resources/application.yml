@@ -12,7 +12,17 @@ spring:
     hibernate:
       ddl-auto: update
     show-sql: true
-
+  kafka:
+    consumer:
+      auto-offset-reset: latest
+      group-id: reservation
+      key-deserializer: org.apache.kafka.common.serialization.StringDeserializer
+      value-deserializer: org.apache.kafka.common.serialization.ByteArrayDeserializer
+      properties:
+        spring.json.trusted.packages: "*"
+    producer:
+      value-serializer: org.springframework.kafka.support.serializer.JsonSerializer
+      key-serializer: org.apache.kafka.common.serialization.StringSerializer
 eureka:
   client:
     service-url:
@@ -20,3 +30,4 @@ eureka:
   instance:
     instanceId: ${spring.application.name}:${vcap.application.instance_id:${spring.application.instance_id:${random.value}}}
     prefer-ip-address: true
+    enabled: false

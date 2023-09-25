@@ -13,5 +13,7 @@ import java.util.UUID;
 public class StoreReservationInformation {
     @Id
     private UUID storeId;
-    private Integer seats;
+    private String name;
+    private String address;
+//    private Integer seats;
 }

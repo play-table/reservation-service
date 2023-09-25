@@ -22,7 +22,6 @@ public class Reservation {
     @Enumerated(EnumType.STRING)
     private ReservationStatus status;
 
-
     private UUID storeId;
     private UUID customerId;
     private String customerName;

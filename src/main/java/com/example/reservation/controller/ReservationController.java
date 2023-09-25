@@ -20,7 +20,7 @@ public class ReservationController {
     @PostMapping("/{storeId}")
     @ResponseStatus(HttpStatus.CREATED)
     public void save(@PathVariable("storeId") String storeId, @RequestBody ReservationRequest request) {
-        reservationService.save(request, storeId);
+        reservationService.save(request,storeId);
     }
 
     @PutMapping("/{storeId}/{status}")

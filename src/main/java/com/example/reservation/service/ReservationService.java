@@ -3,9 +3,14 @@ package com.example.reservation.service;
 import com.example.reservation.client.api.StoreClient;
 import com.example.reservation.domain.entity.Reservation;
 import com.example.reservation.domain.entity.ReservationStatus;
+import com.example.reservation.domain.entity.StoreReservationInformation;
+import com.example.reservation.domain.kafka.ReservationKafkaData;
+import com.example.reservation.domain.kafka.StoreUpdateKafkaData;
 import com.example.reservation.domain.request.OpenRequest;
 import com.example.reservation.domain.request.ReservationRequest;
 import com.example.reservation.domain.response.ReservationResponse;
+import com.example.reservation.kafka.ReservationProducer;
+import com.example.reservation.kafka.StoreConsumer;
 import com.example.reservation.repository.ReservationRepository;
 import com.example.reservation.repository.StoreReservationInformationRepository;
 import jakarta.transaction.Transactional;
@@ -23,12 +28,30 @@ import java.util.UUID;
 public class ReservationService {
     private final ReservationRepository reservationRepository;
     private final StoreReservationInformationRepository storeReservationInformationRepository;
-    private final StoreClient storeClient;
+    private final ReservationProducer reservationProducer;
+//    private final StoreClient storeClient;
 
     public void save(ReservationRequest request, String storeId) {
+//        Reservation save = reservationRepository.save(request.toEntity(storeId));
+//        storeClient.increaseReservation(UUID.fromString(storeId));
         Reservation save = reservationRepository.save(request.toEntity(storeId));
-        storeClient.increaseReservation(UUID.fromString(storeId));
+        ReservationKafkaData reservationKafkaData = new ReservationKafkaData(save);
+        send(reservationKafkaData);
     }
+
+    public void send(ReservationKafkaData data) {
+        reservationProducer.send(data);
+    }
+
+    public void update(StoreUpdateKafkaData data) {
+        Optional<StoreReservationInformation> byId = storeReservationInformationRepository.findById(data.storeId());
+        if (byId.isEmpty()) {
+            return;
+        }
+        StoreReservationInformation information = byId.get();
+        information.setName(data.name());
+        information.setAddress(data.address());
+   }
 
     public void updateStatus(String storeId, String status) {
         Reservation byStoreId = findById(storeId); // 아래에 findById에서 storeId없으면 오류 띄우는거 있음..
@@ -63,6 +86,5 @@ public class ReservationService {
 
         return allByCustomerId.stream().map(ReservationResponse::new).toList();
     }
-
 
 }

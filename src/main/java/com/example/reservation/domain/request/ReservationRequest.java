@@ -2,6 +2,7 @@ package com.example.reservation.domain.request;
 
 import com.example.reservation.domain.entity.Reservation;
 import com.example.reservation.domain.entity.ReservationStatus;
+import com.example.reservation.domain.entity.StoreReservationInformation;
 import lombok.Data;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -20,6 +21,7 @@ public class ReservationRequest {
 
     private String customerId;
     private String customerName;
+    private UUID storeId;
 
 
     public Reservation toEntity(String storeId) {
@@ -33,4 +35,6 @@ public class ReservationRequest {
                 .customerName(customerName)
                 .build();
     }
+
+
 }
